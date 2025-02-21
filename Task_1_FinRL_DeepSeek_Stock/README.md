@@ -16,6 +16,7 @@ https://github.com/Zdong104/FNSPID_Financial_News_Dataset
 
 https://arxiv.org/abs/2402.06698
 
+To be processed by the trading agent, LLM signals (1. Sentiment/stock recommendation and 2. Risk assessment)
 
 
 
