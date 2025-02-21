@@ -25,7 +25,7 @@ For plain PPO and CPPO, `train_trade_data.py` is used.
 
 ## Training and Environments  
 - For training PPO, run:  
-  nohup mpirun --allow-run-as-root -np 8 python train_ppo.py > output_ppo.log 2>&1 &
+  `nohup mpirun --allow-run-as-root -np 8 python train_ppo.py > output_ppo.log 2>&1 &`
 
 
 
