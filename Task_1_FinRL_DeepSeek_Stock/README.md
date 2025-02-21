@@ -5,7 +5,7 @@ This task is about developing automated stock trading agents trained on stock pr
 In this starter kit, participants are introduced to the code of the FinRL-DeepSeek paper (arXiv:2502.07393)
 
 ## Installation of dependencies 
-run `installation_script.sh` on Ubuntu server 
+run `installation_script.sh` on Ubuntu server (128 GB RAM recommended, CPU sufficient)
 
 ## Datasets and data preprocessing 
 
