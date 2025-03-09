@@ -32,7 +32,7 @@ class Evaluator:
     def __init__(self, out_dir: str):
         self.out_dir = out_dir
 
-        '''训练日志'''
+        '''Training Log'''
         self.step_idx = []
         self.step_sec = []
 
@@ -42,10 +42,10 @@ class Evaluator:
         self.tmp_valid = []
         self.obj_valid = []
 
-        '''计时模块'''
+        '''Timing module'''
         self.start_time = time.time()
 
-        '''自动停止训练的组件'''
+        '''Automatically stop training components'''
         self.patience = 0
         self.best_valid_loss = th.inf
 
@@ -128,7 +128,7 @@ class Evaluator:
         ys_train = avg_train
         ys_valid = avg_valid
 
-        # 制表并保存
+        # Make a table and save it
         res_df = pd.DataFrame(np.array([ys_train, ys_valid]).T, index=xs, columns=['train_avg_loss', 'valid_avg_loss'])
         res_df.to_csv(os.path.join(os.path.dirname(figure_path), 'loss_df.csv'))
 
@@ -177,7 +177,7 @@ class Validator:  # need to ask Ding1 Yi3Hen2 before open source
     def __init__(self, out_dir: str, if_report: bool):
         self.thresh_ary = th.tensor(np.sort(np.append(np.linspace(0, 1, 64)[1:-1], .25)))
         self.thresh_ary = th.tensor(np.append(np.linspace(0, 1, 64)[1:-1], .25))
-        self.idx_25 = th.where(self.thresh_ary.eq(0.25))[0]  # 计算threshold为0.25时的accuracy
+        self.idx_25 = th.where(self.thresh_ary.eq(0.25))[0]  # Calculate the accuracy when the threshold is 0.25
         self.accuracy_list = []
         self.tpr_list = []
         self.fpr_list = []
@@ -213,17 +213,17 @@ class Validator:  # need to ask Ding1 Yi3Hen2 before open source
             out3[out.ge(+thresh)] = +1
             out3[out.le(-thresh)] = -1
 
-            # 计算准确率
+            # Calculate accuracy
             accuracy = lab3.eq(out3).float().mean(dim=(0, 1))
             accuracy_list.append(accuracy.cpu().data.numpy())
 
-            # 计算 confusion matrix 中的相关值
+            # Calculate the correlation value in the confusion matrix
             t_positive = th.sum((lab3.ne(0)) & (out3.ne(0)), dim=(0, 1))
             f_positive = th.sum((lab3.eq(0)) & (out3.ne(0)), dim=(0, 1))
             t_negative = th.sum((lab3.eq(0)) & (out3.eq(0)), dim=(0, 1))
             f_negative = th.sum((lab3.ne(0)) & (out3.eq(0)), dim=(0, 1))
 
-            # 计算 tpr 和 fpr
+            # Calculate tpr and fpr
             tpr = t_positive / (t_positive + f_negative)
             fpr = f_positive / (f_positive + t_negative)
 
@@ -292,7 +292,7 @@ class Validator:  # need to ask Ding1 Yi3Hen2 before open source
         fpr_list = np.stack(self.fpr_list).mean(axis=0)
         self._plot_roc_curve(fpr_list, tpr_list)
 
-        plt.tight_layout()  # 调整布局，防止重叠
+        plt.tight_layout()  # Adjust layout to prevent overlap
         plt.savefig(figure_path, dpi=200)
         plt.close('all')  # avoiding warning about too many open figures, rcParam `figure.max_open_warning`
         # plt.show()  # if use `mpl.use('Agg')` to draw figures without GUI, then plt can't plt.show()

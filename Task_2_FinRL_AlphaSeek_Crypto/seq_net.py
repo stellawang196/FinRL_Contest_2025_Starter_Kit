@@ -125,37 +125,37 @@ def check_rnn_reg_net():
 
 
 def check_rnn_in_real_trading():
-    # 假设输入序列是一个长度为seq_length的向量序列，每个向量的维度是input_size
+    # Assume that the input sequence is a vector sequence of length seq_length, and the dimension of each vector is input_size
     seq_length = 24
     input_size = 10
 
-    # 定义一个简单的RNN模型
+    # Define a simple RNN model
     rnn = RnnRegNet(input_size, 20, 1, 1)
 
-    # 随机生成一个输入序列
-    input_seq = th.randn(seq_length, 1, input_size)  # 假设批次大小为1
+    # Randomly generate an input sequence
+    input_seq = th.randn(seq_length, 1, input_size)  # Assume batch size is 1
 
-    # 初始化RNN的隐藏状态
+    # Initialize the hidden state of the RNN
     hidden_state = None
 
-    # 在序列维度上使用for循环逐位输出
+    # Use a for loop to output each bit in the sequence dimension
     output_seq = []
     for t in range(seq_length):
-        # 获取当前时间步的输入
+        # Get the input for the current time step
         input_t = input_seq[t, :, :].unsqueeze(0)
 
-        # 在当前时间步上运行RNN
+        # Run the RNN on the current time step
         output_t, hidden_state = rnn(input_t, hidden_state)
 
-        # 将当前时间步的输出保存到输出序列中
+        # Save the output of the current time step to the output sequence
         output_seq.append(output_t)
 
-    # 将输出序列拼接为一个张量
+    # Concatenate the output sequences into a tensor
     output_seq = th.cat(output_seq, dim=0)
 
     output_seq2, _ = rnn(input_seq)
 
-    # 输出序列的维度
+    # Output sequence dimensions
     print(output_seq.shape)
     t = th.abs(output_seq - output_seq2)
     print(t)

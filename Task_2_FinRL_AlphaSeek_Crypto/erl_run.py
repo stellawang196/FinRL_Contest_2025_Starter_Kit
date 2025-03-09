@@ -431,7 +431,7 @@ def valid_agent(args: Config):
     device = agent.device
     del agent
 
-    # 定义时间范围
+    # Define the time range
     state = sim.reset()
 
     position_ary = []
@@ -465,7 +465,7 @@ def valid_agent(args: Config):
 def run():
     import sys
 
-    gpu_id = int(sys.argv[1]) if len(sys.argv) > 1 else -1  # 从命令行参数里获得GPU_ID
+    gpu_id = int(sys.argv[1]) if len(sys.argv) > 1 else -1  # Get GPU_ID from command line parameters
 
     from erl_agent import AgentD3QN
 

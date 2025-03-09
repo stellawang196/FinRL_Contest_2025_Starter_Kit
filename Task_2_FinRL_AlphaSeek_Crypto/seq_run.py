@@ -15,7 +15,7 @@ class SeqData:
         input_ary_path = args.input_ary_path
         label_ary_path = args.label_ary_path
 
-        '''加载或者生成数据'''
+        '''Load or generate data'''
         if not os.path.exists(label_ary_path) or not os.path.exists(input_ary_path):
             convert_btc_csv_to_btc_npy(args=args)
 
@@ -64,37 +64,36 @@ def train_model(gpu_id: int):
     device = th.device(f"cuda:{gpu_id}" if (th.cuda.is_available() and (gpu_id >= 0)) else "cpu")
 
     '''Config for training'''
-    # 显存占用，模型参数
-    batch_size = 256  # 每个训练批次的样本数量
-    mid_dim = 128  # 循环网络中隐藏层的维度
-    num_layers = 4  # 循环网络中的层数，数值越大，循环网络能记忆的内容越多
+    # Video memory usage, model parameters
+    batch_size = 256  # Number of samples per training batch
+    mid_dim = 128  # Dimensions of hidden layers in recurrent networks
+    num_layers = 4  # The number of layers in the recurrent network. The larger the value, the more content the recurrent network can remember.
 
-    # 训练时长，拟合程度
+    # Training duration, fitting degree
     epoch = 2 ** 8
-    wup_dim = 64  # 循环网络用于预先热身的序列长度。预热阶段不会计算输出的loss，预热只为了得到循环网络隐藏状态
-    valid_gap = 128  # 验证数据的间隔，即每隔多少个训练批次进行一次验证，并print出来，建议整个训练过程print 10~1000次
-
-    num_patience = 8  # 模型训练过程中，能容忍loss连续不得到更优的数值的步数。
-    weight_decay = 1e-4  # 权重衰减，用于控制正则化项的强度，防止过拟合
-    learning_rate = 1e-3  # 学习率，控制每次迭代时参数更新的步长
-    clip_grad_norm = 2  # 梯度裁剪的阈值，用于控制梯度的大小，防止梯度爆炸问题
+    wup_dim = 64 # The length of the sequence used for pre-warming of the recurrent network. The output loss will not be calculated during the pre-warming phase. The pre-warming phase is only used to obtain the hidden state of the recurrent network.
+    valid_gap = 128  # The interval of validation data, that is, how many training batches are used to perform validation and print them out. It is recommended to print 10 to 1000 times during the entire training process
+    num_patience = 8  # During model training, the number of steps that the loss can tolerate not getting a better value continuously.
+    weight_decay = 1e-4  # Weight decay is used to control the strength of the regularization term to prevent overfitting
+    learning_rate = 1e-3  # Learning rate, controls the step size of parameter update at each iteration
+    clip_grad_norm = 2  # Gradient clipping threshold, used to control the size of the gradient and prevent gradient explosion problems
 
     out_dir = './output'
     if_report = True
 
-    '''数据'''
+    '''data'''
     args = ConfigData()
     seq_data = SeqData(args=args, train_ratio=0.8)
     input_dim = seq_data.input_dim
     label_dim = seq_data.label_dim
 
-    '''模型'''
+    '''Model'''
     from seq_net import RnnRegNet
     net = RnnRegNet(inp_dim=input_dim, mid_dim=mid_dim, out_dim=label_dim, num_layers=num_layers).to(device)
     optimizer = th.optim.AdamW(net.parameters(), lr=learning_rate, weight_decay=weight_decay)
     criterion = th.nn.MSELoss(reduction='none')
 
-    '''记录'''
+    '''Record'''
     from seq_record import Evaluator, Validator
     evaluator = Evaluator(out_dir=out_dir)
     validator = Validator(out_dir=out_dir, if_report=if_report)
@@ -168,11 +167,11 @@ def valid_model(gpu_id: int):
     th.set_grad_enabled(False)
 
     '''Config for training'''
-    # 显存占用，模型参数
-    mid_dim = 128  # 循环网络中隐藏层的维度
-    num_layers = 4  # 循环网络中的层数，数值越大，循环网络能记忆的内容越多
+    # Video memory usage, model parameters
+    mid_dim = 128  # Dimensions of hidden layers in recurrent networks
+    num_layers = 4  # The number of layers in the recurrent network. The larger the value, the more content the recurrent network can remember.
 
-    '''数据'''
+    '''data'''
     args = ConfigData()
     seq_data = SeqData(args=args, train_ratio=0.0)
     input_dim = seq_data.input_dim
@@ -181,7 +180,7 @@ def valid_model(gpu_id: int):
     predict_net_path = args.predict_net_path
     predict_ary_path = args.predict_ary_path
 
-    '''模型'''
+    '''Model'''
     from seq_net import RnnRegNet
     net = RnnRegNet(inp_dim=input_dim, mid_dim=mid_dim, out_dim=label_dim, num_layers=num_layers).to(device)
     net.load_state_dict(th.load(predict_net_path, map_location=lambda storage, loc: storage))
@@ -207,7 +206,7 @@ Out[3]: (1030728, 3)
 
 
 if __name__ == '__main__':
-    GPU_ID = int(sys.argv[1]) if len(sys.argv) > 1 else -1  # 从命令行参数里获得GPU_ID
-    convert_btc_csv_to_btc_npy()  # 数据预处理，用行情信息以及代码生成弱因子Alpha101
+    GPU_ID = int(sys.argv[1]) if len(sys.argv) > 1 else -1  # Get GPU_ID from command line parameters
+    convert_btc_csv_to_btc_npy()  # Data preprocessing, using market information and code to generate weak factor Alpha101
     train_model(gpu_id=GPU_ID)  # Using weak factor Alpha101 to train recurrent network RNN ​​(LSTM+GRU + Regression)
     valid_model(gpu_id=GPU_ID)  # Generate prediction results using the trained recurrent network and save them to the directory specified by ConfigData
