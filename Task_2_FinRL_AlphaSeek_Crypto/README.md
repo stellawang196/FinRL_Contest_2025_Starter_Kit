@@ -25,7 +25,6 @@ This starter kit demonstrates how to use the provided code. We provide you with 
 
 - `seq_record.py`: Records the training process logs and plots the loss function graph.
   - Class `Evaluator`: Evaluates model performance during training, tracking accuracy and loss values.
-  - Class `Validator`: Visualizes evaluation results during training.
 
 ### Reinforcement Learning DQN Algorithm Training in a Market Replay Simulator
 
@@ -98,7 +97,7 @@ Run `erl_run.py`'s `train_model()`:
 
 The initial cash is $1 million.
 
-For evaluation, we will run your ensemble agents on a test set and compare the results using metrics like cumulative return, win loss rate and sharpe ratio (subject to change). 
+For evaluation, we will run your ensemble agents on a test set and compare the results using metrics like cumulative return, win loss rate and sharpe ratio. 
 
 We provide an evaluation template that you may use to test your ensemble models. You may change `"predict_ary_path": "BTC_1sec_predict.npy"` in the env_args object to point to a validation subset of the predict ary path which will let you test your model on out of sample data. 
 
@@ -115,11 +114,11 @@ Please submit all your models and the scripts to load and test the models.
 
 Please provide a readme that describes your submission and explains important things to note when running it so that we can ensure we run your submission as it was intended.
 
-1. You are free to apply any method for ensemble learning and factor mining. We strongly encourage innovation in both areas, especially in designing your own factor mining approach. (For example, You can add new agents, use different ensemble algorithms, create novel factors, adjust hyperparameters, etc.) The code provided is just to help get started.
+1. You are free to apply any method for factor mining and ensemble learning. We strongly encourage innovation in both areas, especially in designing your own factor mining approach. (For example, You can add new agents, use different ensemble algorithms, create novel factors, adjust hyperparameters, etc.) The code provided is just to help get started.
 
-2. You are not required to stick to the 8 features we provide. But for evaluation purpose, please make sure that your new technical factors, if any, can be calculated based on the unseen data. Please include this code and state clearly in readme.
+2. You are not required to stick to the factors selection we provide. But for evaluation purpose, please make sure that your new technical factors, if any, can be calculated based on the unseen data. Please include this code and state clearly in readme.
 
-3. We will use the provided environment to evaluate. So it is not encouraged to change the existing parameters in the environment. However, you can fully utilize the environment settings and the massively parallel simulation.
+3. We will use the provided environment to evaluate. So it is not encouraged to change the basic existing parameters in the environment. However, you can fully utilize the environment settings and the massively parallel simulation.
 
 4. To encourage innovation, if you want to add new mechanisms or use 
 the unused settings (e.g. short sell, different voting mechanisms for the ensemble) in the environment, please also submit your environment, ensure it works with your agent for evaluation, and describe the new changes in the readme.
