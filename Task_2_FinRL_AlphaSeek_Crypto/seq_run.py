@@ -94,9 +94,9 @@ def train_model(gpu_id: int):
     criterion = th.nn.MSELoss(reduction='none')
 
     '''Record'''
-    from seq_record import Evaluator, Validator
+    from seq_record import Evaluator #, Validator
     evaluator = Evaluator(out_dir=out_dir)
-    validator = Validator(out_dir=out_dir, if_report=if_report)
+    # validator = Validator(out_dir=out_dir, if_report=if_report)
 
     seq_len = 2 ** 8
     train_times = int(seq_data.train_seq_len / seq_len / batch_size * epoch)
@@ -114,7 +114,7 @@ def train_model(gpu_id: int):
         if (step_idx % valid_gap == 0) or (step_idx == train_times - 1):
             th.set_grad_enabled(False)
             evaluator.update_obj_train(obj=None)
-            validator.reset_list()
+            # validator.reset_list()
 
             '''update_obj_valid'''
             net.eval()
@@ -126,8 +126,8 @@ def train_model(gpu_id: int):
                 out = out[wup_dim:seq_len, :, :]
                 lab = lab[wup_dim:seq_len, :, :]
                 obj = criterion(out, lab)
-                validator.record_accuracy_tpr_fpr(out=out[wup_dim:, :, :],
-                                                  lab=lab[wup_dim:, :, :])
+                # validator.record_accuracy_tpr_fpr(out=out[wup_dim:, :, :],
+                #                                   lab=lab[wup_dim:, :, :])
                 evaluator.update_obj_valid(obj=obj)
             del inp, lab, out
 
@@ -135,14 +135,14 @@ def train_model(gpu_id: int):
 
             evaluator.log_print(step_idx=step_idx)
             evaluator.draw_train_valid_loss_curve(gpu_id=gpu_id)
-            validator.draw_roc_curve_and_accuracy_curve(gpu_id=gpu_id, step_idx=0)
+            # validator.draw_roc_curve_and_accuracy_curve(gpu_id=gpu_id, step_idx=0)
 
             if evaluator.patience > num_patience:
                 break
             if evaluator.patience == 0:
                 best_valid_loss = evaluator.best_valid_loss
                 th.save(net.state_dict(), f'{out_dir}/net_{step_idx:06}_{best_valid_loss:06.3f}.pth')
-                validator.validate_save(f'{out_dir}_result.csv')
+                # validator.validate_save(f'{out_dir}_result.csv')
 
     predict_net_path = args.predict_net_path
     th.save(net.state_dict(), predict_net_path)
